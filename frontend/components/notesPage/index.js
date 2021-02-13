@@ -233,7 +233,7 @@ const NotesPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
           <ViewListIcon className={classes.icon} />
           Reading Lists
         </Link>
-        <Link color="inherit" style={{fontSize:"2.25em", cursor:"pointer"}} onClick={handleNotes}>
+        <Link color="inherit" style={{fontSize:"2em", cursor:"pointer"}} onClick={handleNotes}>
           <NotesIcon className={classes.icon} />
           Notes
         </Link>

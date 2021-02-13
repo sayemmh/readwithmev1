@@ -228,7 +228,7 @@ const ReadingListsPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlo
           <InboxIcon className={classes.icon} />
           Inbox
         </Link>
-        <Link color="inherit" style={{fontSize:"2.25em", cursor:"pointer"}} onClick={handleRL}>
+        <Link color="inherit" style={{fontSize:"2em", cursor:"pointer"}} onClick={handleRL}>
           <ViewListIcon className={classes.icon} />
           Reading Lists
         </Link>

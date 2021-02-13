@@ -1,1 +1,21 @@
-{}
+{
+  "name": "notion-clone-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "12.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "heroku-postbuild": "npm run build"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.5",
+    "fetch": "^1.1.0",
+    "firebase": "^8.2.7",
+    "request": "^2.88.2"
+  }
+}

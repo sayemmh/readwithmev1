@@ -33,7 +33,10 @@ const LogoutPage = () => {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
         });
-        router.push("/login");
+        // router.push("/login");
+        setTimeout(() => {
+          router.push("/login");
+        }, 400);
       } catch (err) {
         console.log(err);
       }

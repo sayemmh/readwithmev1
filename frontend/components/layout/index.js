@@ -41,7 +41,7 @@ const Layout = ({ children }) => {
       <header className={styles.headerBar}>
         <div className={styles.logo}>
           <a href="/pages" role="link" tabIndex="0">
-            Readwith<span style={{ fontSize: "1.25rem" }}>me</span>
+            Read<span style={{ fontSize: "1.25rem" }}>with</span>me
           </a>
         </div>
         <nav className={styles.nav}>

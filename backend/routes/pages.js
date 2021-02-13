@@ -8,6 +8,9 @@ const router = express.Router();
 // GET /pages
 router.get("/", isAuth, pagesController.getPages);
 
+// GET /pages/url/{url}
+router.get("/url/:url", isAuth, pagesController.getMetaData);
+
 // GET /pages/{id}
 router.get("/:pageId", isAuth, pagesController.getPage);
 

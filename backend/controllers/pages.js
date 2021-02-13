@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const cheerio = require("cheerio");
+const request = require("request");
 
 const Page = require("../models/page");
 const User = require("../models/user");
@@ -31,6 +33,15 @@ const getPages = async (req, res, next) => {
     next(err);
   }
 };
+
+const getMetaData = async (req, res, next) => {
+  console.log("getMetaData called")
+  const userId = req.userId;
+  const url = req.url;
+  let $ = cheerio.load(url);
+  let title = $('title').text()
+  return title;
+}
 
 // get a page that already exists
 const getPage = async (req, res, next) => {
@@ -239,6 +250,7 @@ const clearImage = (filePath) => {
 
 exports.getPages = getPages;
 exports.getPage = getPage;
+exports.getMetaData = getMetaData;
 exports.postPage = postPage;
 exports.putPage = putPage;
 exports.deletePage = deletePage;

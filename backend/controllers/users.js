@@ -41,7 +41,16 @@ const signup = async (req, res, next) => {
       password: hashedPassword,
       name: name,
       activationToken: activationToken,
+      inboxBlocks: [
+        {
+          tag: 'h3',
+          html: 'https://www.economist.com/graphic-detail/2021/02/11/container-shipping-costs-have-surged-in-recent-months',
+          imageUrl: ''
+        }
+      ]
     });
+    console.log("signup user")
+    console.log(user)
     const savedUser = await user.save();
 
     // Automatically log in user after registration
@@ -212,7 +221,7 @@ const logout = (req, res, next) => {
   const userId = req.userId;
   console.log("logout got userId")
   console.log(userId)
-  console.log(res)
+  // console.log(res)
   // if (!userId) {
   //   const err = new Error("User is not authenticated.");
   //   err.statusCode = 401;

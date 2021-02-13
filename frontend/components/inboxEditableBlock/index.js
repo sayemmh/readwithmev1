@@ -6,11 +6,13 @@ import TagSelectorMenu from "../tagSelectorMenu";
 import ActionMenu from "../actionMenu";
 import DragHandleIcon from "../../images/draggable.svg";
 import { setCaretToEnd, getCaretCoordinates, getSelection } from "../../utils";
+// const request = require('request')
+// const cheerio = require('cheerio')
 
 const CMD_KEY = "/";
 
 // library does not work with hooks
-class EditableBlock extends React.Component {
+class InboxEditableBlock extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -53,6 +55,7 @@ class EditableBlock extends React.Component {
         x: null,
         y: null,
       },
+      displayText: "",
     };
   }
 
@@ -63,6 +66,9 @@ class EditableBlock extends React.Component {
 
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
+    console.log("componentDidMount")
+    // let yo = this.getMetaData("https://www.economist.com/middle-east-and-africa/2020/11/27/the-father-of-irans-nuclear-programme-is-assassinated")
+    // console.log(yo)
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
@@ -74,6 +80,7 @@ class EditableBlock extends React.Component {
         html: this.props.html,
         tag: this.props.tag,
         imageUrl: this.props.imageUrl,
+        displayText: this.props.html + this.props.html,
       });
     }
   }
@@ -106,8 +113,24 @@ class EditableBlock extends React.Component {
     document.removeEventListener("click", this.closeActionMenu, false);
   }
 
+  async getMetaData(url) {
+      const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API}/pages/url/${url}`,
+          {
+            method: "GET",
+            // credentials: "include",
+            // Forward the authentication cookie to the backend
+            // headers: {
+            //   "Content-Type": "application/json",
+            //   Cookie: req ? req.headers.cookie : undefined,
+            // },
+          }
+        );
+        return await response.json();
+  }
+
   handleChange(e) {
-    this.setState({ ...this.state, html: e.target.value });
+    this.setState({ ...this.state, html: e.target.value, displayText: e.target.value + e.target.value });
   }
 
   handleFocus() {
@@ -346,7 +369,6 @@ class EditableBlock extends React.Component {
 
     console.log("editableBlock render")
     console.log(this.props)
-    console.log(this.contentEditable)
     return (
       <>
         {this.state.tagSelectorMenuOpen && (
@@ -373,6 +395,8 @@ class EditableBlock extends React.Component {
               {...provided.draggableProps}
             >
               {this.state.tag !== "img" && (
+                <div>
+                  <p>{this.state.displayText}</p>
                 <ContentEditable
                   innerRef={this.contentEditable}
                   data-position={this.props.position}
@@ -396,6 +420,7 @@ class EditableBlock extends React.Component {
                     snapshot.isDragging ? styles.isDragging : null,
                   ].join(" ")}
                 />
+                </div>
               )}
               {this.state.tag === "img" && (
                 <div
@@ -452,4 +477,4 @@ class EditableBlock extends React.Component {
   }
 }
 
-export default EditableBlock;
+export default InboxEditableBlock;

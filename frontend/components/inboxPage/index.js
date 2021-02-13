@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Button from "../../components/button";
-import EditableBlock from "../editableBlock";
+import InboxEditableBlock from "../inboxEditableBlock";
 import Notice from "../notice";
 import { usePrevious } from "../../hooks";
 import { objectId, setCaretToEnd } from "../../utils";
@@ -227,7 +227,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
     <>
       <h1 className="pageHeading">Welcome, {creatorid}! </h1>
       <Breadcrumbs separator="/">
-        <Link color="inherit" style={{fontSize:"2.25em", cursor:"pointer"}} onClick={handleInbox}>
+        <Link color="inherit" style={{fontSize:"2em", cursor:"pointer"}} onClick={handleInbox}>
           <InboxIcon className={classes.icon} />
           Inbox
         </Link>
@@ -242,6 +242,28 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
 
       </Breadcrumbs>
       <br></br>
+
+
+      {blocks.length !== 0 && (
+        <Notice style={{ marginBottom: "2rem" }}>
+          <p>You have {blocks.length} unread items in your inbox.</p>
+        </Notice>
+      )}
+
+      {blocks.length === 0 && (
+        <Notice style={{ marginBottom: "2rem" }}>
+          <p>You have 0 unread items in your inbox. Add items here or via the browser extension!</p>
+        </Notice>
+      )}
+
+      {/* {cards.length === 0 && (
+          <Notice style={{ marginBottom: "2rem" }}>
+            <h3>Let's go!</h3>
+            <p>Seems like you haven't created any pages so far.</p>
+            <p>How about starting now?</p>
+          </Notice>
+        )} */}
+        
       <DragDropContext onDragEnd={onDragEndHandler}>
         <Droppable droppableId={id}>
           {(provided) => (
@@ -250,7 +272,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
                 const position =
                   blocks.map((b) => b._id).indexOf(block._id) + 1;
                 return (
-                  <EditableBlock
+                  <InboxEditableBlock
                     key={block._id}
                     position={position}
                     id={block._id}
