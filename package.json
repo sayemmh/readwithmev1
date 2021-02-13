@@ -16,7 +16,22 @@
     "cheerio": "^1.0.0-rc.5",
     "fetch": "^1.1.0",
     "firebase": "^8.2.7",
-    "next": "^10.0.6",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "isomorphic-dompurify": "^0.7.0",
+    "match-sorter": "^4.2.0",
+    "mdi-material-ui": "^6.21.0",
+    "next": "^9.5.5",
+    "next-cookies": "^2.0.3",
+    "next-images": "^1.4.1",
+    "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
+    "react-contenteditable": "^3.3.5",
+    "react-dom": "^16.13.1",
+    "react-google-login": "^5.2.2",
+    "sass": "^1.26.10",
+    "typeface-nunito-sans": "0.0.72",
+    "typeface-roboto": "0.0.75"
   }
 }
