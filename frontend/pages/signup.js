@@ -55,6 +55,9 @@ const SignupPage = () => {
     e.preventDefault();
     setNotice(RESET_NOTICE);
     try {
+      console.log("signup handle submit")
+      console.log(formData)
+      console.log(`${process.env.NEXT_PUBLIC_API}`)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API}/users/signup`,
         {
@@ -68,7 +71,9 @@ const SignupPage = () => {
           }),
         }
       );
+      console.log(response)
       const data = await response.json();
+      console.log(data)
       if (data.errCode) {
         setNotice({ type: "ERROR", message: data.message });
       } else {
