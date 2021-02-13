@@ -8,9 +8,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p $PORT",
-    "heroku-postbuild": "npm run build"
+    "build": "cd frontend && next build",
+    "start": "cd frontend && start -p $PORT",
+    "heroku-postbuild": "cd frontend && npm run build"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.5",
