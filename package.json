@@ -13,12 +13,11 @@
     "heroku-postbuild": "cd frontend && npm run build"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "cheerio": "^1.0.0-rc.5",
     "fetch": "^1.1.0",
     "firebase": "^8.2.7",
-    "request": "^2.88.2",
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
     "isomorphic-dompurify": "^0.7.0",
     "match-sorter": "^4.2.0",
     "mdi-material-ui": "^6.21.0",
@@ -30,6 +29,7 @@
     "react-contenteditable": "^3.3.5",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.2.2",
+    "request": "^2.88.2",
     "sass": "^1.26.10",
     "typeface-nunito-sans": "0.0.72",
     "typeface-roboto": "0.0.75"
