@@ -126,6 +126,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setNotice(RESET_NOTICE);
+   
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API}/users/login`,
@@ -139,7 +140,8 @@ const LoginPage = () => {
           }),
         }
       );
-
+      console.log("submit called")
+      console.log(`${process.env.NEXT_PUBLIC_API}`)
       const data = await response.json();
       console.log("what this look like")
       console.log(data)
