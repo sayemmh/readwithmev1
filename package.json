@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "cd frontend && next build",
     "start": "cd frontend && next start -p $PORT",
-    "heroku-postbuild": "cd frontend && npm run build && cd ../backend && npm start"
+    "heroku-postbuild": "cd frontend && npm run build && cd ../backend && npm prod"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
