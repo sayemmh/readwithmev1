@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "cd frontend && next build",
-    "start": "cd frontend && start -p $PORT",
+    "start": "cd frontend && next start -p $PORT",
     "heroku-postbuild": "cd frontend && npm run build"
   },
   "dependencies": {
@@ -33,5 +33,8 @@
     "sass": "^1.26.10",
     "typeface-nunito-sans": "0.0.72",
     "typeface-roboto": "0.0.75"
+  },
+  "devDependencies": {
+    "webpack": "^5.21.2"
   }
 }
