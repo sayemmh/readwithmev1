@@ -10,6 +10,7 @@ dotenv.config();
 
 const pagesRoutes = require("./backend/routes/pages");
 const usersRoutes = require("./backend/routes/users");
+var cors = require("cors");
 
 // Configuration where images should be stored and named
 const fileStorage = multer.diskStorage({
@@ -55,8 +56,10 @@ const fileFilter = (req, file, cb) => {
 };
 
 const app = express();
+app.use(cors());
 
 app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://readwithmev1.herokuapp.com");
   res.setHeader("Access-Control-Allow-Origin", "https://readwithmev1.herokuapp.com");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
