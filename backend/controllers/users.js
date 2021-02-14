@@ -14,6 +14,7 @@ const {
 
 const signup = async (req, res, next) => {
   try {
+    console.log("was this shit ever called")
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;

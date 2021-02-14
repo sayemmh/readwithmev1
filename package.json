@@ -2,7 +2,7 @@
   "name": "notion-clone-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/app.js",
+  "main": "server.js",
   "engines": {
     "node": "12.x"
   },
