@@ -328,9 +328,6 @@ const updateUser = async (req, res, next) => {
 const updateInbox = async (req, res, next) => {
   const userId = req.userId;
   const blocks = req.body.blocks;
-  console.log("yo this shit was called")
-  console.log(userId)
-  console.log(blocks)
   try {
     const user = await User.findById(userId);
 

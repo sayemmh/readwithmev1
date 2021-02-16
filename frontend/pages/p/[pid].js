@@ -24,8 +24,6 @@ export const getServerSideProps = async (context) => {
       }
     );
     const data = await response.json();
-    console.log("yo hoe")
-    console.log(data)
     return {
       props: { blocks: data.page.blocks, pid: pageId, creatorid: data.page.creator.toString(), err: false },
     };

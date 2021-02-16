@@ -17,7 +17,7 @@ const ActionMenu = ({ position, actions }) => {
       }}
     >
       <div className={styles.menu}>
-        <span
+        {/* <span
           id="turn-into"
           className={styles.menuItem}
           role="button"
@@ -25,7 +25,7 @@ const ActionMenu = ({ position, actions }) => {
           onClick={() => actions.turnInto()}
         >
           Turn into
-        </span>
+        </span> */}
         <span
           id="delete"
           className={styles.menuItem}

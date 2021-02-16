@@ -24,7 +24,6 @@ const PagesPage = ({ pages }) => {
       console.log(err);
     }
   };
-  console.log("yo we here")
   return (
     <>
       <h1 className="pageHeading">Your Reading Lists</h1>

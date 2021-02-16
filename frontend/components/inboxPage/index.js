@@ -71,9 +71,6 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   const [currentBlockId, setCurrentBlockId] = useState(null);
   const classes = useStyles();
 
-  console.log('do we have em')
-  console.log(fetchedBlocks)
-
   const prevBlocks = usePrevious(blocks);
 
   // Update the database whenever blocks change
@@ -166,17 +163,27 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   };
 
   const addBlockHandler = (currentBlock) => {
+    console.log("addBlockHandler")
+    console.log(currentBlock)
     setCurrentBlockId(currentBlock.id);
     const index = blocks.map((b) => b._id).indexOf(currentBlock.id);
+    console.log(index)
+    console.log(blocks)
+    
     const updatedBlocks = [...blocks];
+    console.log("updatedBlocks")
+    console.log(updatedBlocks)
     const newBlock = { _id: objectId(), tag: "p", html: "", imageUrl: "" };
+    console.log(newBlock)
     updatedBlocks.splice(index + 1, 0, newBlock);
+    console.log(updatedBlocks)
     updatedBlocks[index] = {
       ...updatedBlocks[index],
       tag: currentBlock.tag,
       html: currentBlock.html,
       imageUrl: currentBlock.imageUrl,
     };
+    console.log(updatedBlocks)
     setBlocks(updatedBlocks);
   };
 
@@ -216,6 +223,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   }
 
   function handleRL() {
+    console.log("this shit called")
     router.push('/' + id + "/rlists");
   }
 
@@ -292,7 +300,6 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
         </Droppable>
       </DragDropContext>
       <br></br>
-      <Button href="/">Add an item</Button>
     </>
   );
 };

@@ -8,6 +8,7 @@ import DragHandleIcon from "../../images/draggable.svg";
 import { setCaretToEnd, getCaretCoordinates, getSelection } from "../../utils";
 // const request = require('request')
 // const cheerio = require('cheerio')
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 
 const CMD_KEY = "/";
 
@@ -22,6 +23,7 @@ class InboxEditableBlock extends React.Component {
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleDragHandleClick = this.handleDragHandleClick.bind(this);
+    this.handlePlusClick = this.handlePlusClick.bind(this);
     this.openActionMenu = this.openActionMenu.bind(this);
     this.closeActionMenu = this.closeActionMenu.bind(this);
     this.openTagSelectorMenu = this.openTagSelectorMenu.bind(this);
@@ -66,9 +68,6 @@ class InboxEditableBlock extends React.Component {
 
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
-    console.log("componentDidMount")
-    // let yo = this.getMetaData("https://www.economist.com/middle-east-and-africa/2020/11/27/the-father-of-irans-nuclear-programme-is-assassinated")
-    // console.log(yo)
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
@@ -80,7 +79,7 @@ class InboxEditableBlock extends React.Component {
         html: this.props.html,
         tag: this.props.tag,
         imageUrl: this.props.imageUrl,
-        displayText: this.props.html + this.props.html,
+        displayText: this.props.html,
       });
     }
   }
@@ -114,19 +113,25 @@ class InboxEditableBlock extends React.Component {
   }
 
   async getMetaData(url) {
-      const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API}/pages/url/${url}`,
-          {
-            method: "GET",
-            // credentials: "include",
-            // Forward the authentication cookie to the backend
-            // headers: {
-            //   "Content-Type": "application/json",
-            //   Cookie: req ? req.headers.cookie : undefined,
-            // },
-          }
-        );
-        return await response.json();
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API}/pages/url`,
+      {
+        method: "PUT",
+        // credentials: "include",
+        // Forward the authentication cookie to the backend
+        headers: {
+          "Content-Type": "application/json",
+          // Cookie: req ? req.headers.cookie : undefined,
+        },
+        body: JSON.stringify({
+          url: url,
+        }),
+      });
+    const data = await response.json();
+    this.setState({
+      displayText: data.title// + this.props.html,
+    });
+    return data.title;
   }
 
   handleChange(e) {
@@ -202,6 +207,16 @@ class InboxEditableBlock extends React.Component {
     if (selectionStart !== selectionEnd) {
       this.openActionMenu(block, "TEXT_SELECTION");
     }
+  }
+
+  handlePlusClick(e) {
+    this.props.addBlock({
+      id: this.props.id,
+      html: this.state.html,
+      tag: this.state.tag,
+      imageUrl: this.state.imageUrl,
+      ref: this.contentEditable.current,
+    });
   }
 
   handleDragHandleClick(e) {
@@ -367,8 +382,6 @@ class InboxEditableBlock extends React.Component {
 
   render() {
 
-    console.log("editableBlock render")
-    console.log(this.props)
     return (
       <>
         {this.state.tagSelectorMenuOpen && (
@@ -395,8 +408,8 @@ class InboxEditableBlock extends React.Component {
               {...provided.draggableProps}
             >
               {this.state.tag !== "img" && (
-                <div>
-                  <p>{this.state.displayText}</p>
+                <>
+                <h3><a href={`${this.state.html}`} target="_blank">{this.state.displayText}</a></h3>
                 <ContentEditable
                   innerRef={this.contentEditable}
                   data-position={this.props.position}
@@ -420,7 +433,39 @@ class InboxEditableBlock extends React.Component {
                     snapshot.isDragging ? styles.isDragging : null,
                   ].join(" ")}
                 />
-                </div>
+               <span
+                role="button"
+                tabIndex="0"
+                className={styles.dragHandle}
+                onClick={this.handlePlusClick}
+                {...provided.dragHandleProps}
+              >
+                <PlaylistAddIcon />
+              </span> 
+                <ContentEditable
+                  innerRef={this.contentEditable}
+                  data-position={this.props.position}
+                  data-tag={this.state.tag}
+                  html={"this.state.html2"}
+                  // onChange={this.handleChange}
+                  onFocus={this.handleFocus}
+                  onBlur={this.handleBlur}
+                  onKeyDown={this.handleKeyDown}
+                  onKeyUp={this.handleKeyUp}
+                  onMouseUp={this.handleMouseUp}
+                  tagName={this.state.tag}
+                  className={[
+                    styles.block,
+                    this.state.isTyping ||
+                    this.state.actionMenuOpen ||
+                    this.state.tagSelectorMenuOpen
+                      ? styles.blockSelected
+                      : null,
+                    this.state.placeholder ? styles.placeholder : null,
+                    snapshot.isDragging ? styles.isDragging : null,
+                  ].join(" ")}
+                />
+                </>
               )}
               {this.state.tag === "img" && (
                 <div
@@ -460,6 +505,8 @@ class InboxEditableBlock extends React.Component {
                   )}
                 </div>
               )}
+
+              
               <span
                 role="button"
                 tabIndex="0"

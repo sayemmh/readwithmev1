@@ -23,7 +23,7 @@
 
 .draggable .block {
   display: inline-block;
-  width: calc(100% - 20rem);
+  width: calc(100% - 4rem);
 }
 
 .draggable:hover {
@@ -48,7 +48,7 @@
 
 .image {
   display: inline-block;
-  width: calc(100% - 1rem);
+  width: calc(100% - 400rem);
   padding: 0.25rem;
   img {
     display: block;

@@ -10,8 +10,6 @@ export const getServerSideProps = async (context) => {
   resetServerContext(); // needed for drag and drop functionality
   const pageId = context.query.uid;
   const req = context.req;
-  console.log('context uid')
-  console.log(context.query)
   try {
 
     const response = await fetch(
@@ -26,10 +24,8 @@ export const getServerSideProps = async (context) => {
         },
       }
     );
-    console.log("we got the user")
     const data = await response.json();
     const pageIdList = data.pages;
-    console.log(data)
     const pages = await Promise.all(
       pageIdList.map(async (id) => {
         const response = await fetch(

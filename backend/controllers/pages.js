@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const cheerio = require("cheerio");
 const request = require("request");
-
 const Page = require("../models/page");
 const User = require("../models/user");
 
@@ -34,13 +33,48 @@ const getPages = async (req, res, next) => {
   }
 };
 
+function isValidHttpUrl(string) {
+  let url;
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;  
+  }
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
 const getMetaData = async (req, res, next) => {
-  console.log("getMetaData called")
-  const userId = req.userId;
-  const url = req.url;
-  let $ = cheerio.load(url);
-  let title = $('title').text()
-  return title;
+  try {
+    const userId = req.userId;
+    const url = req.body.url;
+    let title;
+    if (isValidHttpUrl(url)) {
+      request(url, function (error, response, body)
+      {
+        if (error) {
+            console.log(error);
+            return
+        }
+        var $ = cheerio.load(body);
+        // in this $ variable we can find the hostname and uri stuff
+        const { hostname } = new URL(url);
+        title = $("title").text();
+        res.status(200).json({
+          message: "Got title",
+          title: title,
+          hostname: hostname,
+        });
+      });
+    } else {
+      res.status(200).json({
+        message: "Not a good URL",
+        title: "",
+        hostname: "",
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 // get a page that already exists
