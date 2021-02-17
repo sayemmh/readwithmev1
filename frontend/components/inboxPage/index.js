@@ -152,6 +152,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
       ...updatedBlocks[index],
       tag: currentBlock.tag,
       html: currentBlock.html,
+      html2: currentBlock.html2,
       imageUrl: currentBlock.imageUrl,
     };
     setBlocks(updatedBlocks);
@@ -173,7 +174,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
     const updatedBlocks = [...blocks];
     console.log("updatedBlocks")
     console.log(updatedBlocks)
-    const newBlock = { _id: objectId(), tag: "p", html: "", imageUrl: "" };
+    const newBlock = { _id: objectId(), tag: "p", html: "", html2: "", imageUrl: "" };
     console.log(newBlock)
     updatedBlocks.splice(index + 1, 0, newBlock);
     console.log(updatedBlocks)
@@ -181,11 +182,38 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
       ...updatedBlocks[index],
       tag: currentBlock.tag,
       html: currentBlock.html,
+      html2: currentBlock.html2,
       imageUrl: currentBlock.imageUrl,
     };
     console.log(updatedBlocks)
     setBlocks(updatedBlocks);
   };
+
+  function addBlockToEndHandler2() {
+    console.log("addBlockHandler2")
+    let index = blocks.length - 1;
+
+    let currentBlock = blocks[blocks.length - 1]
+    setCurrentBlockId(currentBlock.id);
+    console.log(currentBlock)
+    console.log(index)
+    console.log(blocks)
+    const updatedBlocks = [...blocks];
+    console.log("updatedBlocks")
+    console.log(updatedBlocks)
+    // const newBlock = { _id: objectId(), tag: "p", html: "", imageUrl: "" };
+    // console.log(blocks)
+    // console.log(updatedBlocks)
+    // console.log(index)
+    // updatedBlocks.splice(index + 1, 0, newBlock);
+    // updatedBlocks[index] = {
+    //   ...updatedBlocks[index],
+    //   tag: currentBlock.tag,
+    //   html: currentBlock.html,
+    //   imageUrl: currentBlock.imageUrl,
+    // };
+    // setBlocks(updatedBlocks);
+  }
 
   const deleteBlockHandler = (currentBlock) => {
     if (blocks.length > 1) {
@@ -280,18 +308,22 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
                 const position =
                   blocks.map((b) => b._id).indexOf(block._id) + 1;
                 return (
+                  <>
                   <InboxEditableBlock
                     key={block._id}
                     position={position}
                     id={block._id}
                     tag={block.tag}
                     html={block.html}
+                    html2={block.html2}
                     imageUrl={block.imageUrl}
                     pageId={id}
                     addBlock={addBlockHandler}
                     deleteBlock={deleteBlockHandler}
                     updateBlock={updateBlockHandler}
                   />
+
+                  </>
                 );
               })}
               {provided.placeholder}

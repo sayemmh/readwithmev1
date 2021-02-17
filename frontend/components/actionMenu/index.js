@@ -5,8 +5,8 @@ const MENU_WIDTH = 150;
 const MENU_HEIGHT = 40;
 
 const ActionMenu = ({ position, actions }) => {
-  const x = position.x - MENU_WIDTH / 2;
-  const y = position.y - MENU_HEIGHT - 10;
+  let x = position.x - MENU_WIDTH / 2;
+  let y = position.y - MENU_HEIGHT - 10;
 
   return (
     <div
@@ -17,7 +17,7 @@ const ActionMenu = ({ position, actions }) => {
       }}
     >
       <div className={styles.menu}>
-        {/* <span
+        <span
           id="turn-into"
           className={styles.menuItem}
           role="button"
@@ -25,7 +25,7 @@ const ActionMenu = ({ position, actions }) => {
           onClick={() => actions.turnInto()}
         >
           Turn into
-        </span> */}
+        </span>
         <span
           id="delete"
           className={styles.menuItem}

@@ -5,6 +5,7 @@
   // Better support for safari
   -webkit-user-select: text;
   user-select: text;
+  padding-top: 10em;
 }
 
 .block:focus,
@@ -24,6 +25,7 @@
 .draggable .block {
   display: inline-block;
   width: calc(100% - 1rem);
+  padding-bottom: 5em;
 }
 
 .draggable:hover {
@@ -39,7 +41,7 @@
 .dragHandle {
   opacity: 0;
   display: inline-block;
-  width: 1rem;
+  width: 5rem;
   img {
     display: block;
     margin: auto;

@@ -39,6 +39,10 @@ const userSchema = new Schema(
           type: String,
           required: false,
         },
+        html2: {
+          type: String,
+          required: false,
+        },
         imageUrl: {
           type: String,
           required: false,

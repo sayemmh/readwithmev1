@@ -5,11 +5,11 @@ import styles from "./styles.module.scss";
 import TagSelectorMenu from "../tagSelectorMenu";
 import ActionMenu from "../actionMenu";
 import DragHandleIcon from "../../images/draggable.svg";
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { setCaretToEnd, getCaretCoordinates, getSelection } from "../../utils";
-// const request = require('request')
-// const cheerio = require('cheerio')
+import Divider from '@material-ui/core/Divider';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-
+import AddIcon from '@material-ui/icons/Add';
 const CMD_KEY = "/";
 
 // library does not work with hooks
@@ -17,6 +17,7 @@ class InboxEditableBlock extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -41,7 +42,9 @@ class InboxEditableBlock extends React.Component {
     this.fileInput = null;
     this.state = {
       htmlBackup: null,
+      html2Backup: null,
       html: "",
+      html2: "",
       tag: "p",
       imageUrl: "",
       placeholder: false,
@@ -58,6 +61,7 @@ class InboxEditableBlock extends React.Component {
         y: null,
       },
       displayText: "",
+      hostname: "",
     };
   }
 
@@ -68,18 +72,21 @@ class InboxEditableBlock extends React.Component {
 
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
+    this.getMetaData(this.props.html)
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
-      content: this.props.html || this.props.imageUrl,
+      content: this.props.html || this.props.html2 || this.props.imageUrl,
     });
     if (!hasPlaceholder) {
       this.setState({
         ...this.state,
         html: this.props.html,
+        html2: this.props.html2,
         tag: this.props.tag,
         imageUrl: this.props.imageUrl,
         displayText: this.props.html,
+        hostname: this.props.hostname,
       });
     }
   }
@@ -92,17 +99,21 @@ class InboxEditableBlock extends React.Component {
     const stoppedTyping = prevState.isTyping && !this.state.isTyping;
     const hasNoPlaceholder = !this.state.placeholder;
     const htmlChanged = this.props.html !== this.state.html;
+    const html2Changed = this.props.html2 !== this.state.html2;
     const tagChanged = this.props.tag !== this.state.tag;
     const imageChanged = this.props.imageUrl !== this.state.imageUrl;
     if (
-      ((stoppedTyping && htmlChanged) || tagChanged || imageChanged) &&
+      ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
       hasNoPlaceholder
     ) {
+      this.getMetaData(this.props.html) 
       this.props.updateBlock({
         id: this.props.id,
         html: this.state.html,
+        html2: this.state.html2,
         tag: this.state.tag,
         imageUrl: this.state.imageUrl,
+        hostname: this.state.hostname,
       });
     }
   }
@@ -128,8 +139,10 @@ class InboxEditableBlock extends React.Component {
         }),
       });
     const data = await response.json();
+    let settitle = data.title.length < 125 ? data.title : data.title.substring(0, 100) + "...";
     this.setState({
-      displayText: data.title// + this.props.html,
+      displayText: settitle,
+      hostname: data.hostname
     });
     return data.title;
   }
@@ -138,12 +151,17 @@ class InboxEditableBlock extends React.Component {
     this.setState({ ...this.state, html: e.target.value, displayText: e.target.value + e.target.value });
   }
 
+  handleCommentChange(e) {
+    this.setState({ ...this.state, html2: e.target.value });
+  }
+
   handleFocus() {
     // If a placeholder is set, we remove it when the block gets focused
     if (this.state.placeholder) {
       this.setState({
         ...this.state,
         html: "",
+        html2: "",
         placeholder: false,
         isTyping: true,
       });
@@ -157,7 +175,7 @@ class InboxEditableBlock extends React.Component {
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
-      content: this.state.html || this.state.imageUrl,
+      content: this.state.html || this.state.html2 || this.state.imageUrl,
     });
     if (!hasPlaceholder) {
       this.setState({ ...this.state, isTyping: false });
@@ -169,8 +187,8 @@ class InboxEditableBlock extends React.Component {
       // If the user starts to enter a command, we store a backup copy of
       // the html. We need this to restore a clean version of the content
       // after the content type selection was finished.
-      this.setState({ htmlBackup: this.state.html });
-    } else if (e.key === "Backspace" && !this.state.html) {
+      this.setState({ htmlBackup: this.state.html, html2Backup: this.state.html2 });
+    } else if (e.key === "Backspace" && !this.state.html) { // add or html2 in here
       this.props.deleteBlock({ id: this.props.id });
     } else if (
       e.key === "Enter" &&
@@ -181,13 +199,16 @@ class InboxEditableBlock extends React.Component {
       // Only the Shift-Enter-combination should add a new paragraph,
       // i.e. Shift-Enter acts as the default enter behaviour
       e.preventDefault();
-      this.props.addBlock({
-        id: this.props.id,
-        html: this.state.html,
-        tag: this.state.tag,
-        imageUrl: this.state.imageUrl,
-        ref: this.contentEditable.current,
-      });
+      this.getMetaData(this.props.html)
+      // this.props.addBlock({
+      //   id: this.props.id,
+      //   html: this.state.html,
+      //   html2: this.state.html2,
+      //   tag: this.state.tag,
+      //   imageUrl: this.state.imageUrl,
+      //   ref: this.contentEditable.current,
+      //   hostname: this.state.hostname,
+      // });
     }
     // We need the previousKey to detect a Shift-Enter-combination
     this.setState({ previousKey: e.key });
@@ -213,9 +234,11 @@ class InboxEditableBlock extends React.Component {
     this.props.addBlock({
       id: this.props.id,
       html: this.state.html,
+      html2: this.state.html2,
       tag: this.state.tag,
       imageUrl: this.state.imageUrl,
       ref: this.contentEditable.current,
+      hostname: this.state.hostname,
     });
   }
 
@@ -283,15 +306,17 @@ class InboxEditableBlock extends React.Component {
         this.props.addBlock({
           id: this.props.id,
           html: "",
+          html2: "",
           tag: "p",
           imageUrl: "",
           ref: this.contentEditable.current,
+          hostname: "",
         });
       });
     } else {
       if (this.state.isTyping) {
         // Update the tag and restore the html backup without the command
-        this.setState({ tag: tag, html: this.state.htmlBackup }, () => {
+        this.setState({ tag: tag, html: this.state.htmlBackup, html2: this.state.html2Backup }, () => {
           setCaretToEnd(this.contentEditable.current);
           this.closeTagSelectorMenu();
         });
@@ -329,16 +354,21 @@ class InboxEditableBlock extends React.Component {
 
   // Show a placeholder for blank pages
   addPlaceholder({ block, position, content }) {
-    const isFirstBlockWithoutHtml = position === 1 && !content;
-    const isFirstBlockWithoutSibling = !block.parentElement.nextElementSibling;
-    if (isFirstBlockWithoutHtml && isFirstBlockWithoutSibling) {
+    // const isFirstBlockWithoutHtml = position === 1 && !content;
+    const isFirstBlockWithoutHtml = !content;
+
+    // const isFirstBlockWithoutSibling = !block.parentElement.nextElementSibling;
+    // if (isFirstBlockWithoutHtml && isFirstBlockWithoutSibling) {
+    if (isFirstBlockWithoutHtml) {
       this.setState({
         ...this.state,
-        html: "Type a page title...",
-        tag: "h1",
+        html: "Enter Article URL here",
+        html2: "Comment",
+        tag: "p",
         imageUrl: "",
         placeholder: true,
         isTyping: false,
+        hostname: "",
       });
       return true;
     } else {
@@ -409,12 +439,16 @@ class InboxEditableBlock extends React.Component {
             >
               {this.state.tag !== "img" && (
                 <>
-                <h3><a href={`${this.state.html}`} target="_blank">{this.state.displayText}</a></h3>
+                <h3 className={styles.articleTitle} ><a href={`${this.state.html}`} target="_blank">{this.state.displayText.substring(0, 100)}</a></h3>
+
+
+                {/* article URL - contenteditable */}
                 <ContentEditable
                   innerRef={this.contentEditable}
                   data-position={this.props.position}
                   data-tag={this.state.tag}
-                  html={this.state.html}
+                  html={this.state.displayText == "" ? this.state.html : this.state.hostname} // why is hostname undefined for a short period
+                  disabled={this.state.displayText != ""}
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
@@ -423,31 +457,21 @@ class InboxEditableBlock extends React.Component {
                   onMouseUp={this.handleMouseUp}
                   tagName={this.state.tag}
                   className={[
-                    styles.block,
-                    this.state.isTyping ||
+                    styles.articleURL,
+                    (this.state.isTyping ||
                     this.state.actionMenuOpen ||
-                    this.state.tagSelectorMenuOpen
+                    this.state.tagSelectorMenuOpen) && 
+                    this.state.displayText == ""
                       ? styles.blockSelected
                       : null,
                     this.state.placeholder ? styles.placeholder : null,
                     snapshot.isDragging ? styles.isDragging : null,
                   ].join(" ")}
                 />
-               <span
-                role="button"
-                tabIndex="0"
-                className={styles.dragHandle}
-                onClick={this.handlePlusClick}
-                {...provided.dragHandleProps}
-              >
-                <PlaylistAddIcon />
-              </span> 
+                {/* comment - contenteditable */}
                 <ContentEditable
-                  innerRef={this.contentEditable}
-                  data-position={this.props.position}
-                  data-tag={this.state.tag}
-                  html={"this.state.html2"}
-                  // onChange={this.handleChange}
+                  html={this.state.html2}
+                  onChange={this.handleCommentChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
                   onKeyDown={this.handleKeyDown}
@@ -507,6 +531,16 @@ class InboxEditableBlock extends React.Component {
               )}
 
               
+              {/* <span
+                role="button"
+                tabIndex="0"
+                className={styles.dragHandle}
+                onClick={this.handleDragHandleClick}
+                
+              >
+                <DragIndicatorIcon className={styles.dragHandle} />
+              </span> */}
+
               <span
                 role="button"
                 tabIndex="0"
@@ -515,8 +549,21 @@ class InboxEditableBlock extends React.Component {
                 {...provided.dragHandleProps}
               >
                 <img src={DragHandleIcon} alt="Icon" />
+                
               </span>
+
+              <span
+                role="button"
+                tabIndex="0"
+                className={styles.dragHandle}
+                onClick={this.handlePlusClick}
+                {...provided.dragHandleProps}
+              >
+                <AddIcon className={styles.plusHandle} />
+              </span>
+              <Divider className={styles.divider}/>
             </div>
+            
           )}
         </Draggable>
       </>

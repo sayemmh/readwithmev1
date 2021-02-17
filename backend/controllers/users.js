@@ -46,6 +46,7 @@ const signup = async (req, res, next) => {
         {
           tag: 'h3',
           html: 'https://www.economist.com/graphic-detail/2021/02/11/container-shipping-costs-have-surged-in-recent-months',
+          html2: '',
           imageUrl: ''
         }
       ]
@@ -61,7 +62,7 @@ const signup = async (req, res, next) => {
     );
 
     // Set cookie in the browser to store authentication state
-    const maxAge = 1000 * 60; // * 60 * 24 * 3; // 3 days
+    const maxAge = 1000 * 60 * 60; // * 60 * 24 * 3; // 3 days
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: maxAge,
@@ -112,8 +113,8 @@ const googlogin = async (req, res, next) => {
     // Set cookie in the browser to store authentication state
     const maxAge = 1000 * 60 * 60; // 1 hour
     res.cookie("token", token, {
-      // httpOnly: true,
-      // maxAge: maxAge,
+      httpOnly: true,
+      maxAge: maxAge,
       domain: process.env.DOMAIN,
     });
     res.status(201).json({
@@ -203,8 +204,8 @@ const login = async (req, res, next) => {
     // Set cookie in the browser to store authentication state
     const maxAge = 1000 * 60 * 60; // 1 hour
     res.cookie("token", token, {
-      // httpOnly: true,
-      // maxAge: maxAge,
+      httpOnly: true,
+      maxAge: maxAge,
       domain: process.env.DOMAIN,
     });
     res.status(201).json({
