@@ -172,12 +172,8 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
     console.log(blocks)
     
     const updatedBlocks = [...blocks];
-    console.log("updatedBlocks")
-    console.log(updatedBlocks)
     const newBlock = { _id: objectId(), tag: "p", html: "", html2: "", imageUrl: "" };
-    console.log(newBlock)
     updatedBlocks.splice(index + 1, 0, newBlock);
-    console.log(updatedBlocks)
     updatedBlocks[index] = {
       ...updatedBlocks[index],
       tag: currentBlock.tag,
@@ -185,7 +181,6 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
       html2: currentBlock.html2,
       imageUrl: currentBlock.imageUrl,
     };
-    console.log(updatedBlocks)
     setBlocks(updatedBlocks);
   };
 

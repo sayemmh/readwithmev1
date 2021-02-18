@@ -102,11 +102,25 @@ class InboxEditableBlock extends React.Component {
     const html2Changed = this.props.html2 !== this.state.html2;
     const tagChanged = this.props.tag !== this.state.tag;
     const imageChanged = this.props.imageUrl !== this.state.imageUrl;
-    if (
-      ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
-      hasNoPlaceholder
-    ) {
-      this.getMetaData(this.props.html) 
+    // console.log("hoe stopped")
+    // this.getMetaData(this.props.html)
+    // if (
+      // ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
+    //   hasNoPlaceholder
+    // ) {
+    //   console.log("hoe here")
+    //   this.getMetaData(this.props.html) 
+    //   this.props.updateBlock({
+    //     id: this.props.id,
+    //     html: this.state.html,
+    //     html2: this.state.html2,
+    //     tag: this.state.tag,
+    //     imageUrl: this.state.imageUrl,
+    //     hostname: this.state.hostname,
+    //   });
+    // }
+    if ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed)) {
+      this.getMetaData(this.state.html) 
       this.props.updateBlock({
         id: this.props.id,
         html: this.state.html,
@@ -144,7 +158,7 @@ class InboxEditableBlock extends React.Component {
       displayText: settitle,
       hostname: data.hostname
     });
-    return data.title;
+    // return data.title;
   }
 
   handleChange(e) {
@@ -199,7 +213,8 @@ class InboxEditableBlock extends React.Component {
       // Only the Shift-Enter-combination should add a new paragraph,
       // i.e. Shift-Enter acts as the default enter behaviour
       e.preventDefault();
-      this.getMetaData(this.props.html)
+      console.log("yooooo")
+      // this.getMetaData(this.props.html)
       // this.props.addBlock({
       //   id: this.props.id,
       //   html: this.state.html,
@@ -209,7 +224,15 @@ class InboxEditableBlock extends React.Component {
       //   ref: this.contentEditable.current,
       //   hostname: this.state.hostname,
       // });
-    }
+      this.props.updateBlock({
+        id: this.props.id,
+        html: this.state.html,
+        html2: this.state.html2,
+        tag: this.state.tag,
+        imageUrl: this.state.imageUrl,
+        hostname: this.state.hostname,
+      });
+    } 
     // We need the previousKey to detect a Shift-Enter-combination
     this.setState({ previousKey: e.key });
   }
