@@ -164,8 +164,6 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   };
 
   const addBlockHandler = (currentBlock) => {
-    console.log("addBlockHandler")
-    console.log(currentBlock)
     setCurrentBlockId(currentBlock.id);
     const index = blocks.map((b) => b._id).indexOf(currentBlock.id);
     console.log(index)

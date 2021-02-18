@@ -1,10 +1,12 @@
 import styles from "./styles.module.scss";
 import TrashIcon from "../../images/trash.svg";
+import ArchiveIcon from '@material-ui/icons/Archive';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const MENU_WIDTH = 150;
 const MENU_HEIGHT = 40;
 
-const ActionMenu = ({ position, actions }) => {
+const ActionMenuInbox = ({ position, actions }) => {
   let x = position.x - MENU_WIDTH / 2;
   let y = position.y - MENU_HEIGHT - 10;
 
@@ -24,21 +26,22 @@ const ActionMenu = ({ position, actions }) => {
           tabIndex="0"
           onClick={() => actions.turnInto()}
         >
-          Turn into
+          Add to reading list
         </span>
+        <ArchiveIcon 
+          className={styles.archiveItem}
+          onClick={() => console.log("archive")}
+        />
 
-        <span
+        <DeleteIcon 
           id="delete"
-          className={styles.menuItem}
-          role="button"
-          tabIndex="0"
+          className={styles.archiveItem}
           onClick={() => actions.deleteBlock()}
-        >
-          <img src={TrashIcon} alt="Trash Icon" />
-        </span>
+        />
+        
       </div>
     </div>
   );
 };
 
-export default ActionMenu;
+export default ActionMenuInbox;

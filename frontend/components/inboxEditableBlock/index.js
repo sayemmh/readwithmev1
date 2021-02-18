@@ -3,7 +3,8 @@ import { Draggable } from "react-beautiful-dnd";
 
 import styles from "./styles.module.scss";
 import TagSelectorMenu from "../tagSelectorMenu";
-import ActionMenu from "../actionMenu";
+import ActionMenuInbox from "../actionMenuInbox";
+import AddElsewhereMenu from "../addElsewhereMenu";
 import DragHandleIcon from "../../images/draggable.svg";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import { setCaretToEnd, getCaretCoordinates, getSelection } from "../../utils";
@@ -104,23 +105,24 @@ class InboxEditableBlock extends React.Component {
     const imageChanged = this.props.imageUrl !== this.state.imageUrl;
     // console.log("hoe stopped")
     // this.getMetaData(this.props.html)
-    // if (
-      // ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
-    //   hasNoPlaceholder
-    // ) {
-    //   console.log("hoe here")
-    //   this.getMetaData(this.props.html) 
-    //   this.props.updateBlock({
-    //     id: this.props.id,
-    //     html: this.state.html,
-    //     html2: this.state.html2,
-    //     tag: this.state.tag,
-    //     imageUrl: this.state.imageUrl,
-    //     hostname: this.state.hostname,
-    //   });
-    // }
-    if ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed)) {
-      this.getMetaData(this.state.html) 
+    if (
+      ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
+      hasNoPlaceholder
+    ) {
+      // console.log("hoe here")
+      this.getMetaData(this.props.html) 
+      this.props.updateBlock({
+        id: this.props.id,
+        html: this.state.html,
+        html2: this.state.html2,
+        tag: this.state.tag,
+        imageUrl: this.state.imageUrl,
+        hostname: this.state.hostname,
+      });
+    } else if (htmlChanged) {
+      console.log("first time enter?")
+      this.getMetaData(this.state.html)
+      // here lets post all our data to the block in mongo 
       this.props.updateBlock({
         id: this.props.id,
         html: this.state.html,
@@ -197,6 +199,13 @@ class InboxEditableBlock extends React.Component {
   }
 
   handleKeyDown(e) {
+    // console.log("handlekeydown")
+    // console.log(e.key)
+    // if (e.key == "v") {
+    //   e.preventDefault();
+    //   console.log("yooooo")
+    //   this.getMetaData(this.props.html)
+    // }
     if (e.key === CMD_KEY) {
       // If the user starts to enter a command, we store a backup copy of
       // the html. We need this to restore a clean version of the content
@@ -214,7 +223,7 @@ class InboxEditableBlock extends React.Component {
       // i.e. Shift-Enter acts as the default enter behaviour
       e.preventDefault();
       console.log("yooooo")
-      // this.getMetaData(this.props.html)
+      this.getMetaData(this.props.html)
       // this.props.addBlock({
       //   id: this.props.id,
       //   html: this.state.html,
@@ -224,15 +233,14 @@ class InboxEditableBlock extends React.Component {
       //   ref: this.contentEditable.current,
       //   hostname: this.state.hostname,
       // });
-      this.props.updateBlock({
-        id: this.props.id,
-        html: this.state.html,
-        html2: this.state.html2,
-        tag: this.state.tag,
-        imageUrl: this.state.imageUrl,
-        hostname: this.state.hostname,
-      });
-    } 
+    } else if (
+      e.key === "v" &&
+      this.state.previousKey !== "Shift" &&
+      !this.state.tagSelectorMenuOpen
+    ) {
+      // e.preventDefault();
+      this.getMetaData(this.props.html)
+    }
     // We need the previousKey to detect a Shift-Enter-combination
     this.setState({ previousKey: e.key });
   }
@@ -438,14 +446,14 @@ class InboxEditableBlock extends React.Component {
     return (
       <>
         {this.state.tagSelectorMenuOpen && (
-          <TagSelectorMenu
+          <AddElsewhereMenu
             position={this.state.tagSelectorMenuPosition}
             closeMenu={this.closeTagSelectorMenu}
             handleSelection={this.handleTagSelection}
           />
         )}
         {this.state.actionMenuOpen && (
-          <ActionMenu
+          <ActionMenuInbox
             position={this.state.actionMenuPosition}
             actions={{
               deleteBlock: () => this.props.deleteBlock({ id: this.props.id }),
