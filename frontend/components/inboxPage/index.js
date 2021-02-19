@@ -73,6 +73,9 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
 
   const prevBlocks = usePrevious(blocks);
 
+  console.log("fetchedBlocks")
+  console.log(fetchedBlocks)
+
   // Update the database whenever blocks change
   useEffect(() => {
     const updatePageOnServer = async (blocks) => {
@@ -325,6 +328,10 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
                     html={block.html}
                     html2={block.html2}
                     imageUrl={block.imageUrl}
+                    displayText={block.displayText}
+                    protocol={block.protocol}
+                    hostname={block.hostname}
+                    pathname={block.pathname}
                     pageId={id}
                     addBlock={addBlockHandler}
                     deleteBlock={deleteBlockHandler}

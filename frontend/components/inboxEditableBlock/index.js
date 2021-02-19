@@ -72,7 +72,7 @@ class InboxEditableBlock extends React.Component {
 
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
-    this.getMetaData(this.props.html) // we want to get rid of this and just retrieve the data from the stored object id
+    // this.getMetaData(this.props.html) // we want to get rid of this and just retrieve the data from the stored object id
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
@@ -109,18 +109,18 @@ class InboxEditableBlock extends React.Component {
       hasNoPlaceholder
     ) {
       // console.log("hoe here")
-      this.getMetaData(this.props.html) 
-      this.props.updateBlock({
-        id: this.props.id,
-        tag: this.state.tag,
-        html: this.state.html,
-        html2: this.state.html2,
-        imageUrl: this.state.imageUrl,
-        displayText: this.state.displayText,
-        protocol: this.state.protocol,
-        hostname: this.state.hostname,
-        pathname: this.state.pathname,
-      });
+      // this.getMetaData(this.props.html) 
+      // this.props.updateBlock({
+      //   id: this.props.id,
+      //   tag: this.state.tag,
+      //   html: this.state.html,
+      //   html2: this.state.html2,
+      //   imageUrl: this.state.imageUrl,
+      //   displayText: this.state.displayText,
+      //   protocol: this.state.protocol,
+      //   hostname: this.state.hostname,
+      //   pathname: this.state.pathname,
+      // });
     } else if (htmlChanged) {
       console.log("first time enter?")
       this.getMetaData(this.state.html).then(() => {
@@ -503,7 +503,7 @@ class InboxEditableBlock extends React.Component {
             >
               {this.state.tag !== "img" && (
                 <>
-                <h3 className={styles.articleTitle} ><a href={`${this.state.html}`} target="_blank">{this.state.displayText.substring(0, 100)}</a></h3>
+                <h3 className={styles.articleTitle} ><a href={`${this.state.html}`} target="_blank">{this.props.displayText.substring(0, 100)}</a></h3>
 
 
                 {/* article URL - contenteditable */}
@@ -511,8 +511,8 @@ class InboxEditableBlock extends React.Component {
                   innerRef={this.contentEditable}
                   data-position={this.props.position}
                   data-tag={this.state.tag}
-                  html={this.state.displayText == "" ? this.state.html : this.state.hostname} // why is hostname undefined for a short period
-                  disabled={this.state.displayText != ""}
+                  html={this.props.displayText == "" ? this.props.html : this.props.hostname} // why is hostname undefined for a short period
+                  disabled={this.props.displayText != ""}
                   onChange={this.handleChange}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
