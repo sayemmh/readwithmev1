@@ -2,7 +2,6 @@ import ContentEditable from "react-contenteditable";
 import { Draggable } from "react-beautiful-dnd";
 
 import styles from "./styles.module.scss";
-import TagSelectorMenu from "../tagSelectorMenu";
 import ActionMenuInbox from "../actionMenuInbox";
 import AddElsewhereMenu from "../addElsewhereMenu";
 import DragHandleIcon from "../../images/draggable.svg";
@@ -73,7 +72,7 @@ class InboxEditableBlock extends React.Component {
 
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
-    this.getMetaData(this.props.html)
+    this.getMetaData(this.props.html) // we want to get rid of this and just retrieve the data from the stored object id
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
@@ -113,24 +112,32 @@ class InboxEditableBlock extends React.Component {
       this.getMetaData(this.props.html) 
       this.props.updateBlock({
         id: this.props.id,
+        tag: this.state.tag,
         html: this.state.html,
         html2: this.state.html2,
-        tag: this.state.tag,
         imageUrl: this.state.imageUrl,
+        displayText: this.state.displayText,
+        protocol: this.state.protocol,
         hostname: this.state.hostname,
+        pathname: this.state.pathname,
       });
     } else if (htmlChanged) {
       console.log("first time enter?")
-      this.getMetaData(this.state.html)
-      // here lets post all our data to the block in mongo 
-      this.props.updateBlock({
-        id: this.props.id,
-        html: this.state.html,
-        html2: this.state.html2,
-        tag: this.state.tag,
-        imageUrl: this.state.imageUrl,
-        hostname: this.state.hostname,
-      });
+      this.getMetaData(this.state.html).then(() => {
+        console.log("thisbtichstate") 
+        console.log(this.state)
+        this.props.updateBlock({
+          id: this.props.id,
+          tag: this.state.tag,
+          html: this.state.html,
+          html2: this.state.html2,
+          imageUrl: this.state.imageUrl,
+          displayText: this.state.displayText,
+          protocol: this.state.protocol,
+          hostname: this.state.hostname,
+          pathname: this.state.pathname,
+        });
+      })
     }
   }
 
@@ -140,11 +147,12 @@ class InboxEditableBlock extends React.Component {
   }
 
   async getMetaData(url) {
+    console.log("getMetaData called")
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API}/pages/url`,
       {
         method: "PUT",
-        // credentials: "include",
+        credentials: "include",
         // Forward the authentication cookie to the backend
         headers: {
           "Content-Type": "application/json",
@@ -154,12 +162,30 @@ class InboxEditableBlock extends React.Component {
           url: url,
         }),
       });
-    const data = await response.json();
+    const data = await response.json().then();
+    // console.log("responsedata")
+    // console.log(data)
     let settitle = data.title.length < 125 ? data.title : data.title.substring(0, 100) + "...";
+    console.log(data)
     this.setState({
       displayText: settitle,
-      hostname: data.hostname
+      hostname: data.hostname,
+      protocol: data.protocol,
+      pathname: data.pathname,
     });
+    console.log('this.state')
+    console.log(this.state)
+    // this.props.updateBlock({
+    //     id: this.props.id,
+    //     tag: this.state.tag,
+    //     html: this.state.html,
+    //     html2: this.state.html2,
+    //     imageUrl: this.state.imageUrl,
+    //     displayText: this.state.displayText,
+    //     protocol: this.state.protocol,
+    //     hostname: this.state.hostname,
+    //     pathname: this.state.pathname,
+    // });
     // return data.title;
   }
 
@@ -218,11 +244,12 @@ class InboxEditableBlock extends React.Component {
       this.state.previousKey !== "Shift" &&
       !this.state.tagSelectorMenuOpen
     ) {
+      console.log("enter pressed")
       // If the user presses Enter, we want to add a new block
       // Only the Shift-Enter-combination should add a new paragraph,
       // i.e. Shift-Enter acts as the default enter behaviour
       e.preventDefault();
-      console.log("yooooo")
+      console.log("commeent entered")
       this.getMetaData(this.props.html)
       // this.props.addBlock({
       //   id: this.props.id,
@@ -264,12 +291,15 @@ class InboxEditableBlock extends React.Component {
   handlePlusClick(e) {
     this.props.addBlock({
       id: this.props.id,
+      tag: this.state.tag,
       html: this.state.html,
       html2: this.state.html2,
-      tag: this.state.tag,
       imageUrl: this.state.imageUrl,
+      displayText: this.state.displayText,
+      protocol: this.state.protocol,
       ref: this.contentEditable.current,
       hostname: this.state.hostname,
+      pathname: this.state.pathname,
     });
   }
 
@@ -400,6 +430,9 @@ class InboxEditableBlock extends React.Component {
         placeholder: true,
         isTyping: false,
         hostname: "",
+        pathname: "",
+        protocol: "",
+        displayText: "",
       });
       return true;
     } else {

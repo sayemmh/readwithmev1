@@ -45,31 +45,44 @@ function isValidHttpUrl(string) {
 
 const getMetaData = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    console.log("getMetaData")
+    // const userId = req.userId;
     const url = req.body.url;
+
+    // console.log(userId)
+
+    // const user = await User.findById(userId);
+    // console.log("inboxBlocks")
+    // console.log(user.inboxBlocks)
     let title;
     if (isValidHttpUrl(url)) {
       request(url, function (error, response, body)
       {
         if (error) {
-            console.log(error);
-            return
+          console.log(error);
+          return
         }
         var $ = cheerio.load(body);
         // in this $ variable we can find the hostname and uri stuff
-        const { hostname } = new URL(url);
+        const { protocol, hostname, pathname } = new URL(url);
+        console.log('protocol, hostname, pathname')
+        console.log(protocol, hostname, pathname)
         title = $("title").text();
         res.status(200).json({
           message: "Got title",
           title: title,
+          protocol: protocol,
           hostname: hostname,
+          pathname: pathname,
         });
       });
     } else {
       res.status(200).json({
         message: "Not a good URL",
         title: "",
+        protocol: "",
         hostname: "",
+        pathname: "",
       });
     }
   } catch (err) {

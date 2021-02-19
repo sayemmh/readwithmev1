@@ -45,9 +45,13 @@ const signup = async (req, res, next) => {
       inboxBlocks: [
         {
           tag: 'h3',
-          html: 'https://www.economist.com/graphic-detail/2021/02/11/container-shipping-costs-have-surged-in-recent-months',
+          html: '',
           html2: '',
-          imageUrl: ''
+          imageUrl: '',
+          displayText: '',
+          protocol: '',
+          hostname: '',
+          pathname: '',
         }
       ]
     });
@@ -327,8 +331,10 @@ const updateUser = async (req, res, next) => {
 };
 
 const updateInbox = async (req, res, next) => {
+  console.log("when does this shit get called")
   const userId = req.userId;
   const blocks = req.body.blocks;
+  console.log(blocks)
   try {
     const user = await User.findById(userId);
 

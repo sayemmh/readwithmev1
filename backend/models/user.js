@@ -47,6 +47,22 @@ const userSchema = new Schema(
           type: String,
           required: false,
         },
+        displayText: {
+          type: String,
+          required: false,
+        },
+        protocol: {
+          type: String,
+          required: false,
+        },
+        hostname: {
+          type: String,
+          required: false,
+        },
+        pathname: {
+          type: String,
+          required: false,
+        }
       },
     ],
     pages: [

@@ -154,6 +154,10 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
       html: currentBlock.html,
       html2: currentBlock.html2,
       imageUrl: currentBlock.imageUrl,
+      displayText: currentBlock.displayText,
+      protocol: currentBlock.protocol,
+      hostname: currentBlock.hostname,
+      pathname: currentBlock.pathname,
     };
     setBlocks(updatedBlocks);
     // If the image has been changed, we have to delete the
@@ -170,7 +174,15 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
     console.log(blocks)
     
     const updatedBlocks = [...blocks];
-    const newBlock = { _id: objectId(), tag: "p", html: "", html2: "", imageUrl: "" };
+    const newBlock =  {  
+                        _id: objectId(), 
+                        tag: "p",
+                        html: "",
+                        html2: "",
+                        imageUrl: "",
+                        displayText:"",
+                        protocol: "" 
+                      };
     updatedBlocks.splice(index + 1, 0, newBlock);
     updatedBlocks[index] = {
       ...updatedBlocks[index],
@@ -178,6 +190,10 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
       html: currentBlock.html,
       html2: currentBlock.html2,
       imageUrl: currentBlock.imageUrl,
+      displayText: currentBlock.displayText,
+      protocol: currentBlock.protocol,
+      hostname: currentBlock.hostname,
+      pathname: currentBlock.pathname,
     };
     setBlocks(updatedBlocks);
   };
@@ -244,7 +260,6 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   }
 
   function handleRL() {
-    console.log("this shit called")
     router.push('/' + id + "/rlists");
   }
 
