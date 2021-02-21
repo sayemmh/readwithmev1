@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+const Page = require("../models/page")
 const transport = require("../emails/transport");
 
 const {
@@ -35,6 +36,9 @@ const signup = async (req, res, next) => {
       throw err;
     }
 
+    // create two pages here, get the IDs, then pass in those two id's into the user object below as required pages.
+
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const activationToken = (await promisify(randomBytes)(20)).toString("hex");
     const user = new User({
@@ -58,6 +62,28 @@ const signup = async (req, res, next) => {
     console.log("signup user")
     console.log(user)
     const savedUser = await user.save();
+
+    const blocks = [{ tag: "h1", html: "Likes", imageUrl: "" }];
+    const blocks2 = [{ tag: "h1", html: "Archive", imageUrl: "" }];
+    let userId = savedUser._id;
+    const page = new Page({
+      blocks: blocks,
+      creator: userId,
+      ispublic: true,
+    });
+    const page2 = new Page({
+      blocks: blocks2,
+      creator: userId,
+      ispublic: true,
+    });
+    const savedPage = await page.save();
+    const savedPage2 = await page2.save();
+
+    user.permanentPages.push(savedPage._id);
+    user.permanentPages.push(savedPage2._id);
+    console.log(savedPage._id)
+    console.log(savedPage2._id)
+    await user.save();
 
     // Automatically log in user after registration
     const token = jwt.sign(
@@ -288,6 +314,7 @@ const getUser = async (req, res, next) => {
       name: user.name,
       pages: user.pages,
       inboxBlocks: user.inboxBlocks,
+      permanentPages: user.permanentPages,
     });
   } catch (err) {
     next(err);

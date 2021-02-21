@@ -13,6 +13,7 @@ import InboxIcon from '@material-ui/icons/Inbox';
 import { makeStyles } from '@material-ui/core/styles';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import NotesIcon from '@material-ui/icons/Notes';
+import BioHeader from "../bioheader";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -222,20 +223,56 @@ const NotesPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
 
   return (
     <>
-      <h1 className="pageHeading">Welcome, {creatorid}! </h1>
+      {/* <h1 className="pageHeading">Welcome, {creatorid}! </h1> */}
       {/* <h1 className="pageHeading">Your Notes</h1> */}
+      <BioHeader style={{ marginBottom: "1rem" }}>
+        <h4>Sayem Hoque</h4>
+        <p>@sayemhoque</p>
+        <p>Hi there, I'm Sayem!</p>
+        
+        
+        {/* <DragDropContext onDragEnd={onDragEndHandler}>
+          <Droppable droppableId={id}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <EditableBlock
+                  key={block1._id}
+                  position={0}
+                  id={block1._id}
+                  tag={block1.tag}
+                  html={block1.html}
+                  html2={block1.html2}
+                  imageUrl={block1.imageUrl}
+                  displayText={block1.displayText}
+                  protocol={block1.protocol}
+                  hostname={block1.hostname}
+                  pathname={block1.pathname}
+                  pageId={id}
+                  disabled={true}
+                  addBlock={addBlockHandler}
+                  deleteBlock={deleteBlockHandler}
+                  updateBlock={updateBlockHandler}
+                />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext> */}
+      </BioHeader>
       <Breadcrumbs separator="/">
         <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleInbox}>
           <InboxIcon className={classes.icon} />
           Inbox
         </Link>
-        <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleRL}>
-          <ViewListIcon className={classes.icon} />
-          Reading Lists
-        </Link>
+        
         <Link color="inherit" style={{fontSize:"2em", cursor:"pointer"}} onClick={handleNotes}>
           <NotesIcon className={classes.icon} />
           Notes
+        </Link>
+
+        <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleRL}>
+          <ViewListIcon className={classes.icon} />
+          Lists
         </Link>
 
       </Breadcrumbs>

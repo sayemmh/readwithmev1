@@ -6,7 +6,7 @@ const Page = require("../models/page");
 const User = require("../models/user");
 
 const getPages = async (req, res, next) => {
-  
+  console.log("getPages called")
   const userId = req.userId;
 
   try {
@@ -92,12 +92,14 @@ const getMetaData = async (req, res, next) => {
 
 // get a page that already exists
 const getPage = async (req, res, next) => {
-  
+  console.log("getPage called!")
   let userId = req.userId;
   const pageId = req.params.pageId;
-
+  // console.log(userId)
+  console.log(pageId)
   try {
     const page = await Page.findById(pageId);
+    console.log(page)
     if (!page) {
       const err = new Error("Could not find page by id.");
       err.statusCode = 404;
@@ -139,9 +141,53 @@ const getPage = async (req, res, next) => {
 };
 
 // create page for the first time
-const postPage = async (req, res, next) => {
-  const userId = req.userId;
+const postPage2 = async (req, res, next) => {
+  // console.log("postPage2 called!")
+  const userId = req.body.userId;
   const blocks = req.body.blocks;
+  // console.log("req.body.userId")
+  // console.log(req.body.userId)
+  // console.log(req.body.blocks)
+  const page = new Page({
+    blocks: blocks,
+    creator: userId || null,
+    ispublic: true,
+  });
+  try {
+    const savedPage = await page.save();
+
+    // Update user collection too
+    if (userId) {
+      const user = await User.findById(userId);
+      if (!user) {
+        const err = new Error("Could not find user by id.");
+        err.statusCode = 404;
+        throw err;
+      }
+      // console.log("yo this the page added to users page array")
+      // console.log(savedPage._id)
+      user.pages.push(savedPage._id);
+      await user.save();
+    }
+    console.log(savedPage)
+
+    res.status(201).json({
+      message: "Created page successfully.",
+      page: savedPage,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// create page for the first time
+const postPage = async (req, res, next) => {
+  console.log("postPage called!")
+  const userId = req.body.userId;
+  const blocks = req.body.blocks;
+  console.log("req.body.userId")
+  console.log(req.body.userId)
+  console.log(req.body.blocks)
   const page = new Page({
     blocks: blocks,
     creator: userId || null,
@@ -211,7 +257,7 @@ const putPage = async (req, res, next) => {
 const deletePage = async (req, res, next) => {
   const userId = req.userId;
   const pageId = req.params.pageId;
-
+  console.log("deletePage called")
   try {
     const page = await Page.findById(pageId);
 
@@ -299,6 +345,7 @@ exports.getPages = getPages;
 exports.getPage = getPage;
 exports.getMetaData = getMetaData;
 exports.postPage = postPage;
+exports.postPage2 = postPage2;
 exports.putPage = putPage;
 exports.deletePage = deletePage;
 exports.postImage = postImage;

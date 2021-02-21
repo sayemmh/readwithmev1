@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Button from "../../components/button";
+import EditableBlock from "../editableBlock";
 import InboxEditableBlock from "../inboxEditableBlock";
+import BioHeader from "../bioheader";
 import Notice from "../notice";
 import { usePrevious } from "../../hooks";
 import { objectId, setCaretToEnd } from "../../utils";
@@ -13,6 +15,8 @@ import InboxIcon from '@material-ui/icons/Inbox';
 import { makeStyles } from '@material-ui/core/styles';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import NotesIcon from '@material-ui/icons/Notes';
+import ContentEditable from "react-contenteditable";
+import styles from "./styles.module.scss";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -70,9 +74,9 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   const [blocks, setBlocks] = useState(fetchedBlocks);
   const [currentBlockId, setCurrentBlockId] = useState(null);
   const classes = useStyles();
-
+  const contentEditable = React.createRef();
   const prevBlocks = usePrevious(blocks);
-
+  let block1 = blocks[0];
   console.log("fetchedBlocks")
   console.log(fetchedBlocks)
 
@@ -148,6 +152,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
   };
 
   const updateBlockHandler = (currentBlock) => {
+    console.log("updateBlockHandler called")
     const index = blocks.map((b) => b._id).indexOf(currentBlock.id);
     const oldBlock = blocks[index];
     const updatedBlocks = [...blocks];
@@ -272,36 +277,83 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
 
   return (
     <>
-      <h1 className="pageHeading">Welcome, {creatorid}! </h1>
+      {/* <h1 className="pageHeading">💐💐💐, {creatorid}! </h1> */}
+      {/* <h2 >💐💐💐 </h2> */}
+      {/* <h3 className="pageHeading"> @sayemhoque </h3>
+      <h3 className="pageHeading"> your bio here </h3>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br> */}
+      
+      <BioHeader style={{ marginBottom: "1rem" }}>
+        <h4>Sayem Hoque</h4>
+        <p>@sayemhoque</p>
+        <p>Hi there, I'm Sayem!</p>
+        
+        
+        {/* <DragDropContext onDragEnd={onDragEndHandler}>
+          <Droppable droppableId={id}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <EditableBlock
+                  key={block1._id}
+                  position={0}
+                  id={block1._id}
+                  tag={block1.tag}
+                  html={block1.html}
+                  html2={block1.html2}
+                  imageUrl={block1.imageUrl}
+                  displayText={block1.displayText}
+                  protocol={block1.protocol}
+                  hostname={block1.hostname}
+                  pathname={block1.pathname}
+                  pageId={id}
+                  disabled={true}
+                  addBlock={addBlockHandler}
+                  deleteBlock={deleteBlockHandler}
+                  updateBlock={updateBlockHandler}
+                />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext> */}
+      </BioHeader>
+
       <Breadcrumbs separator="/">
         <Link color="inherit" style={{fontSize:"2em", cursor:"pointer"}} onClick={handleInbox}>
           <InboxIcon className={classes.icon} />
           Inbox
         </Link>
-        <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleRL}>
-          <ViewListIcon className={classes.icon} />
-          Reading Lists
-        </Link>
         <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleNotes}>
           <NotesIcon className={classes.icon} />
           Notes
         </Link>
+        <Link color="inherit" style={{fontSize:"1.1em", cursor:"pointer"}} onClick={handleRL}>
+          <ViewListIcon className={classes.icon} />
+          Lists
+        </Link>
+        
 
       </Breadcrumbs>
       <br></br>
 
 
-      {blocks.length !== 0 && (
-        <Notice style={{ marginBottom: "2rem" }}>
+
+
+      {/* {blocks.length !== 0 && (
+        <Notice style={{ marginBottom: "1rem" }}>
           <p>You have {blocks.length} unread items in your inbox.</p>
         </Notice>
-      )}
+      )} */}
 
-      {blocks.length === 0 && (
+      {/* {blocks.length === 0 && (
         <Notice style={{ marginBottom: "2rem" }}>
           <p>You have 0 unread items in your inbox. Add items here or via the browser extension!</p>
         </Notice>
-      )}
+      )} */}
 
       {/* {cards.length === 0 && (
           <Notice style={{ marginBottom: "2rem" }}>
@@ -318,6 +370,7 @@ const InboxPage = ({ id, creatorid, pageIdList, filteredPages, fetchedBlocks, er
               {blocks.map((block) => {
                 const position =
                   blocks.map((b) => b._id).indexOf(block._id) + 1;
+                console.log(block)
                 return (
                   <>
                   <InboxEditableBlock

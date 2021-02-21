@@ -92,7 +92,7 @@ const PagesPage = ({ profileid, pages, inbox, pid, creatorid, blocks }) => {
         </Link>
         <Link color="inherit" onClick={handleRL}>
           <ViewListIcon className={classes.icon} />
-          Reading Lists
+          Lists
         </Link>
         <Link color="inherit" onClick={handleNotes}>
           <NotesIcon className={classes.icon} />

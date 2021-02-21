@@ -17,6 +17,9 @@ router.get("/:pageId", isAuth, pagesController.getPage);
 // POST /pages
 router.post("/", isAuth, pagesController.postPage);
 
+// POST /pages2
+router.post("/postpage", isAuth, pagesController.postPage2);
+
 // PUT /pages/{id}
 router.put("/:pageId", isAuth, pagesController.putPage);
 

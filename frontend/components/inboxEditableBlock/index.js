@@ -73,19 +73,21 @@ class InboxEditableBlock extends React.Component {
   componentDidMount() {
     // Add a placeholder if the first block has no sibling elements and no content
     // this.getMetaData(this.props.html) // we want to get rid of this and just retrieve the data from the stored object id
+    console.log("componentdidmount")
     const hasPlaceholder = this.addPlaceholder({
       block: this.contentEditable.current,
       position: this.props.position,
       content: this.props.html || this.props.html2 || this.props.imageUrl,
     });
     if (!hasPlaceholder) {
+      // console.log(this.props.html)
       this.setState({
         ...this.state,
         html: this.props.html,
         html2: this.props.html2,
         tag: this.props.tag,
         imageUrl: this.props.imageUrl,
-        displayText: this.props.html,
+        displayText: this.props.displayText || this.props.html,
         hostname: this.props.hostname,
       });
     }
@@ -108,19 +110,19 @@ class InboxEditableBlock extends React.Component {
       ((stoppedTyping && htmlChanged) || (stoppedTyping && html2Changed) || tagChanged || imageChanged) &&
       hasNoPlaceholder
     ) {
-      // console.log("hoe here")
+      console.log("hoe here")
       // this.getMetaData(this.props.html) 
-      // this.props.updateBlock({
-      //   id: this.props.id,
-      //   tag: this.state.tag,
-      //   html: this.state.html,
-      //   html2: this.state.html2,
-      //   imageUrl: this.state.imageUrl,
-      //   displayText: this.state.displayText,
-      //   protocol: this.state.protocol,
-      //   hostname: this.state.hostname,
-      //   pathname: this.state.pathname,
-      // });
+      this.props.updateBlock({
+        id: this.props.id,
+        tag: this.state.tag,
+        html: this.state.html,
+        html2: this.state.html2,
+        imageUrl: this.state.imageUrl,
+        displayText: this.props.displayText,
+        protocol: this.state.protocol,
+        hostname: this.state.hostname,
+        pathname: this.state.pathname,
+      });
     } else if (htmlChanged) {
       console.log("first time enter?")
       this.getMetaData(this.state.html).then(() => {
@@ -163,7 +165,7 @@ class InboxEditableBlock extends React.Component {
         }),
       });
     const data = await response.json().then();
-    // console.log("responsedata")
+    console.log("getMataData called")
     // console.log(data)
     let settitle = data.title.length < 125 ? data.title : data.title.substring(0, 100) + "...";
     console.log(data)
@@ -194,6 +196,7 @@ class InboxEditableBlock extends React.Component {
   }
 
   handleCommentChange(e) {
+    console.log("handleCommentChange called!")
     this.setState({ ...this.state, html2: e.target.value });
   }
 
@@ -417,9 +420,11 @@ class InboxEditableBlock extends React.Component {
   addPlaceholder({ block, position, content }) {
     // const isFirstBlockWithoutHtml = position === 1 && !content;
     const isFirstBlockWithoutHtml = !content;
-
+    // return false; 
     // const isFirstBlockWithoutSibling = !block.parentElement.nextElementSibling;
     // if (isFirstBlockWithoutHtml && isFirstBlockWithoutSibling) {
+    console.log("addplaceholder called")
+    console.log(this.state)
     if (isFirstBlockWithoutHtml) {
       this.setState({
         ...this.state,
@@ -504,7 +509,6 @@ class InboxEditableBlock extends React.Component {
               {this.state.tag !== "img" && (
                 <>
                 <h3 className={styles.articleTitle} ><a href={`${this.state.html}`} target="_blank">{this.props.displayText.substring(0, 100)}</a></h3>
-
 
                 {/* article URL - contenteditable */}
                 <ContentEditable

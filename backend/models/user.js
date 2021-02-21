@@ -71,6 +71,12 @@ const userSchema = new Schema(
         ref: "Page",
       },
     ],
+    permanentPages: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Page",
+      },
+    ],
   },
   { timestamps: true }
 );
